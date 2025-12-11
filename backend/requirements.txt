@@ -1,0 +1,9 @@
+#Backend Core
+fastapi[standard]
+uvicorn
+
+#Excel
+openpyxl
+
+#Utilities
+python-multipart
