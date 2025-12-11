@@ -15,6 +15,7 @@ Below is a sample of the timesheet template given to me to submit every month. A
 <img width="960" height="671" alt="image" src="https://github.com/user-attachments/assets/dc31709c-e0f4-4752-8c70-c33ea22a7284" />
 Currently, I do not foresee a need for a database, as there is no reason to retain the timesheets after submission.
 </br>
+
 ### Some things to consider:
 - Default Values such as Contract Reference No., Name of Staff, Signature. Values can be in .env file
 - Dynamic Values such as Dates, Days, Period. Can be based on current date.
