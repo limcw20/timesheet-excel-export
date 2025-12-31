@@ -1,14 +1,14 @@
 
-*Was away for military service, now recovering from eye surgery
-*Last update: 31 Dec 2025
+*Was away for military service, currently recovering from eye surgery.
+</br>
 
-# Export for Timesheet
-
-## LATEST UPDATE (31/12/25)
+### LATEST UPDATE (31/12/25)
 - Started on base structure of Excel Template.
 - Setup for excel generation API call, payload in JSON format.
 - Dates in excel are auto-filled according to month and year provided. (Starts at 3rd day of month for now)
 - Excel temporarily exports to project folder for ease of testing, will be shifted to .env after structure is finalized.
+
+# Export for Timesheet
 
 <strong>ISSUE:</strong>
 </br>
