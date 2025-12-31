@@ -1,0 +1,67 @@
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, Border, Side
+from datetime import datetime, timedelta
+import uuid
+import os
+
+TMP_DIR = "tmp"
+os.makedirs(TMP_DIR, exist_ok=True)
+
+def generate_timesheet_excel(timesheet: dict) -> str:
+
+    wb = Workbook()
+    ws = wb.active
+
+    bold_font = Font(bold=True)
+    center_align = Alignment(horizontal="center")
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    headers = ["Date", "Weekday", "Hours Worked", "Remarks"]
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(row=1, column=col, value=header)
+        cell.font = bold_font
+        cell.alignment = center_align
+        cell.border = thin_border
+
+    start_year = timesheet['start_year']
+    start_month = timesheet['start_month']
+    start_date = datetime(start_year, start_month, 3)
+
+    if start_month == 12:
+        next_year = start_year + 1
+        next_month = 1
+    else:
+        next_year = start_year
+        next_month = start_month + 1
+
+    end_date = datetime(next_year, next_month, 3)
+    total_days = (end_date - start_date).days + 1
+
+    entries = timesheet.get('entries', [])
+
+    for i in range(total_days):
+        row_num = i + 2  
+        date_obj = start_date + timedelta(days=i)
+        ws.cell(row=row_num, column=1, value=date_obj.strftime("%Y-%m-%d"))
+        ws.cell(row=row_num, column=2, value=date_obj.strftime("%A"))
+
+        if i < len(entries):
+            entry = entries[i]
+            ws.cell(row=row_num, column=3, value=entry.get('hours_worked', 0))
+            ws.cell(row=row_num, column=4, value=entry.get('remarks', ''))
+
+        for col in range(1, 5):
+            ws.cell(row=row_num, column=col).alignment = center_align
+            ws.cell(row=row_num, column=col).border = thin_border
+
+    for col in range(1, 5):
+        ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = 15
+
+    out_file = os.path.join(TMP_DIR, f"timesheet_{uuid.uuid4()}.xlsx")
+    wb.save(out_file)
+    return out_file
