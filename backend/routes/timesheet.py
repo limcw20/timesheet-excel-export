@@ -6,4 +6,5 @@ router = APIRouter()
 
 @router.post("/export")
 def export_timesheet(timesheet: Timesheet):
-    return export_timesheet_controller(timesheet)
+    data = timesheet.dict()
+    return export_timesheet_controller(data)
