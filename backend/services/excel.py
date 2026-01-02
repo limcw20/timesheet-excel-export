@@ -42,18 +42,30 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     end_date = datetime(next_year, next_month, 3)
     total_days = (end_date - start_date).days + 1
 
-    entries = timesheet.get('entries', [])
+    entries = {e.get('day_of_month'): e for e in timesheet.get('entries', [])}
 
     for i in range(total_days):
         row_num = i + 2  
         date_obj = start_date + timedelta(days=i)
-        ws.cell(row=row_num, column=1, value=date_obj.strftime("%Y-%m-%d"))
-        ws.cell(row=row_num, column=2, value=date_obj.strftime("%A"))
+        weekday = date_obj.strftime("%A")
+        day_of_month = date_obj.day
 
-        if i < len(entries):
-            entry = entries[i]
-            ws.cell(row=row_num, column=3, value=entry.get('hours_worked', 0))
-            ws.cell(row=row_num, column=4, value=entry.get('remarks', ''))
+        if weekday in ["Saturday", "Sunday"]:
+            hours_worked = None
+            remarks = ""
+        else:
+            hours_worked = 8
+            remarks = ""
+
+        if day_of_month in entries:
+            entry = entries[day_of_month]
+            hours_worked = entry.get('hours_worked', hours_worked)
+            remarks = entry.get('remarks', remarks)
+
+        ws.cell(row=row_num, column=1, value=date_obj.strftime("%Y-%m-%d"))
+        ws.cell(row=row_num, column=2, value=weekday)
+        ws.cell(row=row_num, column=3, value=hours_worked)
+        ws.cell(row=row_num, column=4, value=remarks)
 
         for col in range(1, 5):
             ws.cell(row=row_num, column=col).alignment = center_align
