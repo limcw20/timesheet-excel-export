@@ -30,7 +30,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
 
     start_year = timesheet['start_year']
     start_month = timesheet['start_month']
-    start_date = datetime(start_year, start_month, 3)
+    start_date = datetime(start_year, start_month, 4)
 
     if start_month == 12:
         next_year = start_year + 1
