@@ -1,10 +1,9 @@
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import date
+# from datetime import date
 
 class TimesheetEntry(BaseModel):
-    entry_date: Optional[date] = None
-    weekday: Optional[str] = None
+    day_of_month: int
     hours_worked: Optional[float] = 0
     remarks: Optional[str] = None
 
