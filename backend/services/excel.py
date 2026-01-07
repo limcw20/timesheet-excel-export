@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import uuid
 import os
 
+# Temporary directory (to change when all is done)
 TMP_DIR = "tmp"
 os.makedirs(TMP_DIR, exist_ok=True)
 
@@ -22,23 +23,24 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         bottom=Side(style='thin')
     )
 
+    # 1st Row Title
     ws.merge_cells("A1:K1") 
     title_cell = ws["A1"] 
     title_cell.value = "Time Sheet" 
     title_cell.font = Font(bold=True, size=20) 
     title_cell.alignment = center_align
-    
 
+    # Headers
     headers = ["Date", "Weekday", "Hours Worked", "Remarks"]
     for col, header in enumerate(headers, start=1):
-        cell = ws.cell(row=2, column=col, value=header)
+        cell = ws.cell(row=3, column=col, value=header) # Header at row n
         cell.font = bold_font
         cell.alignment = center_align
         cell.border = thin_border
 
     start_year = timesheet['start_year']
     start_month = timesheet['start_month']
-    start_date = datetime(start_year, start_month, 4)
+    start_date = datetime(start_year, start_month, 4) # start from nth day of month
 
     if start_month == 12:
         next_year = start_year + 1
@@ -47,13 +49,13 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         next_year = start_year
         next_month = start_month + 1
 
-    end_date = datetime(next_year, next_month, 3)
+    end_date = datetime(next_year, next_month, 3) # end at nth day of next month
     total_days = (end_date - start_date).days + 1
 
     entries = {e.get('day_of_month'): e for e in timesheet.get('entries', [])}
 
     for i in range(total_days):
-        row_num = i + 3  
+        row_num = i + 4 # Data starts from row n
         date_obj = start_date + timedelta(days=i)
         weekday = date_obj.strftime("%A")
         day_of_month = date_obj.day
