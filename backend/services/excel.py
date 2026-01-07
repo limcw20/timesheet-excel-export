@@ -23,6 +23,19 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         bottom=Side(style='thin')
     )
 
+    # Column widths
+    ws.column_dimensions["A"].width = 11
+    ws.column_dimensions["B"].width = 25
+    ws.column_dimensions["C"].width = 25
+    ws.column_dimensions["D"].width = 20
+    ws.column_dimensions["E"].width = 20
+    ws.column_dimensions["F"].width = 15
+    # ws.column_dimensions["G"].width = 10
+    # ws.column_dimensions["H"].width = 10
+    # ws.column_dimensions["I"].width = 10
+    # ws.column_dimensions["J"].width = 10
+    # ws.column_dimensions["K"].width = 10
+
     # 1st Row Title
     ws.merge_cells("A1:K1") 
     title_cell = ws["A1"] 
@@ -48,23 +61,23 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     entries = {e.get('day_of_month'): e for e in timesheet.get('entries', [])}
     
     # 3rd Row - employee ref, date period, name of employee
-    ws.merge_cells("A3:B3")
+    ws.merge_cells("A3:C3")
     employee_ref_cell = ws["A3"]
     employee_ref_cell.value = "Contract Reference No: UU-9999"
     employee_ref_cell.font = Font(bold=True, size=12)
 
-    ws.merge_cells("C3:E3")
-    date_period_cell = ws["C3"]
+    ws.merge_cells("D3:F3")
+    date_period_cell = ws["D3"]
     date_period_cell.value = f"Date Period: {start_date.strftime('%d %b %Y')} to {end_date.strftime('%d %b %Y')}"
     date_period_cell.font = Font(bold=True, size=12)
     
-    ws.merge_cells("F3:K3")
-    name_cell = ws["F3"]
+    ws.merge_cells("G3:K3")
+    name_cell = ws["G3"]
     name_cell.value = "Name of Staff: John Doe"
     name_cell.font = Font(bold=True, size=12)
     
     # Headers
-    headers = ["Date", "Day", "Reason for Absence", "Time In", "Time Out", "Hours Worked"]
+    headers = ["Day", "Date", "Reason for Absence", "Time In", "Time Out", "Hours Worked"]
     for col, header in enumerate(headers, start=1):
         cell = ws.cell(row=6, column=col, value=header) # Header at row n
         cell.font = bold_font
@@ -138,8 +151,8 @@ def generate_timesheet_excel(timesheet: dict) -> str:
                     ws.cell(row=row_num, column=col).fill = leave_fill
 
         # Fill in rows on specified columns with data(value)
-        ws.cell(row=row_num, column=1, value=date_obj.strftime("%Y-%m-%d"))
-        ws.cell(row=row_num, column=2, value=weekday)
+        ws.cell(row=row_num, column=1, value=weekday)
+        ws.cell(row=row_num, column=2, value=date_obj.strftime("%Y-%m-%d"))
         ws.cell(row=row_num, column=3, value=reason_for_absence)
         ws.cell(row=row_num, column=4, value=time_in)
         ws.cell(row=row_num, column=5, value=time_out)
@@ -148,10 +161,6 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         for col in range(1, 7):
             ws.cell(row=row_num, column=col).alignment = center_align
             ws.cell(row=row_num, column=col).border = thin_border
-
-    for col in range(1, 7):
-        col_letter = get_column_letter(col)
-        ws.column_dimensions[col_letter].width = 15
 
     out_file = os.path.join(TMP_DIR, f"timesheet_{uuid.uuid4()}.xlsx")
     wb.save(out_file)
