@@ -76,7 +76,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
             time_out = None
         
         # Logic for full day absent codes
-        elif reason_for_absence in ["AL", "MC", "UPL"]:
+        elif reason_for_absence in ["AL", "MC", "UPL","PH"]:
             print("here")
             hours_worked = None
             reason_for_absence = reason_for_absence
@@ -84,7 +84,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
             time_out = ""
         
         # Logic for half day absent codes
-        elif reason_for_absence in ["AM leave", "PM leave"]:
+        elif reason_for_absence in ["AM leave", "PM leave", "half day"]:
             hours_worked = 3
             reason_for_absence = reason_for_absence
             if reason_for_absence == "AM leave":
