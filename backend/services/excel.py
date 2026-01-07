@@ -1,5 +1,5 @@
 from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment, Border, Side
+from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
 from datetime import datetime, timedelta
 import uuid
@@ -54,6 +54,11 @@ def generate_timesheet_excel(timesheet: dict) -> str:
 
     entries = {e.get('day_of_month'): e for e in timesheet.get('entries', [])}
 
+    # Row Highlights
+    weekend_fill = PatternFill(start_color="BFBFBF", end_color="BFBFBF", fill_type="solid") # Grey
+    holiday_fill = PatternFill(start_color="FDE9D9", end_color="FDE9D9", fill_type="solid") # Light Orangey kind of colour
+    leave_fill = PatternFill(start_color="DCE6F1", end_color="DCE6F1", fill_type="solid") # Light Blue
+
     for i in range(total_days):
         row_num = i + 4 # Data starts from row n
         date_obj = start_date + timedelta(days=i)
@@ -74,7 +79,9 @@ def generate_timesheet_excel(timesheet: dict) -> str:
             reason_for_absence = ""
             time_in = None
             time_out = None
-        
+            for col in range(1, 7):
+                ws.cell(row=row_num, column=col).fill = weekend_fill
+                
         # Logic for full day absent codes
         elif reason_for_absence in ["AL", "MC", "UPL","PH"]:
             print("here")
@@ -82,6 +89,13 @@ def generate_timesheet_excel(timesheet: dict) -> str:
             reason_for_absence = reason_for_absence
             time_in = ""
             time_out = ""
+            if reason_for_absence == "PH":
+                for col in range(1, 7):
+                    ws.cell(row=row_num, column=col).fill = holiday_fill
+            else:
+                for col in range(1, 7):
+                    ws.cell(row=row_num, column=col).fill = leave_fill
+            
         
         # Logic for half day absent codes
         elif reason_for_absence in ["AM leave", "PM leave", "half day"]:
@@ -93,6 +107,13 @@ def generate_timesheet_excel(timesheet: dict) -> str:
             else:
                 time_in = "09:00am"
                 time_out = "12:00pm"
+            
+            if reason_for_absence == "half day":
+                for col in range(1, 7):
+                    ws.cell(row=row_num, column=col).fill = holiday_fill
+            else:
+                for col in range(1, 7):
+                    ws.cell(row=row_num, column=col).fill = leave_fill
                 
         else:
             hours_worked = 8
