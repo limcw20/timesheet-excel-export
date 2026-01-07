@@ -30,14 +30,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     title_cell.font = Font(bold=True, size=20) 
     title_cell.alignment = center_align
 
-    # Headers
-    headers = ["Date", "Weekday", "Reason for Absence", "Time In", "Time Out", "Hours Worked"]
-    for col, header in enumerate(headers, start=1):
-        cell = ws.cell(row=3, column=col, value=header) # Header at row n
-        cell.font = bold_font
-        cell.alignment = center_align
-        cell.border = thin_border
-
+    # Date Range Calculation
     start_year = timesheet['start_year']
     start_month = timesheet['start_month']
     start_date = datetime(start_year, start_month, 4) # start from nth day of month
@@ -53,6 +46,30 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     total_days = (end_date - start_date).days + 1
 
     entries = {e.get('day_of_month'): e for e in timesheet.get('entries', [])}
+    
+    # 3rd Row - employee ref, date period, name of employee
+    ws.merge_cells("A3:B3")
+    employee_ref_cell = ws["A3"]
+    employee_ref_cell.value = "Contract Reference No: UU-9999"
+    employee_ref_cell.font = Font(bold=True, size=12)
+
+    ws.merge_cells("C3:E3")
+    date_period_cell = ws["C3"]
+    date_period_cell.value = f"Date Period: {start_date.strftime('%d %b %Y')} to {end_date.strftime('%d %b %Y')}"
+    date_period_cell.font = Font(bold=True, size=12)
+    
+    ws.merge_cells("F3:K3")
+    name_cell = ws["F3"]
+    name_cell.value = "Name of Staff: John Doe"
+    name_cell.font = Font(bold=True, size=12)
+    
+    # Headers
+    headers = ["Date", "Day", "Reason for Absence", "Time In", "Time Out", "Hours Worked"]
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(row=6, column=col, value=header) # Header at row n
+        cell.font = bold_font
+        cell.alignment = center_align
+        cell.border = thin_border
 
     # Row Highlights
     weekend_fill = PatternFill(start_color="BFBFBF", end_color="BFBFBF", fill_type="solid") # Grey
@@ -60,7 +77,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     leave_fill = PatternFill(start_color="DCE6F1", end_color="DCE6F1", fill_type="solid") # Light Blue
 
     for i in range(total_days):
-        row_num = i + 4 # Data starts from row n
+        row_num = i + 7 # Data starts from row n
         date_obj = start_date + timedelta(days=i)
         weekday = date_obj.strftime("%A")
         day_of_month = date_obj.day
