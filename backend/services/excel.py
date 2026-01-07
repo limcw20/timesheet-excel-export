@@ -31,7 +31,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     title_cell.alignment = center_align
 
     # Headers
-    headers = ["Date", "Weekday", "Hours Worked", "Remarks"]
+    headers = ["Date", "Weekday", "Reason for Absence", "Time In", "Time Out", "Hours Worked"]
     for col, header in enumerate(headers, start=1):
         cell = ws.cell(row=3, column=col, value=header) # Header at row n
         cell.font = bold_font
@@ -60,28 +60,60 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         weekday = date_obj.strftime("%A")
         day_of_month = date_obj.day
 
-        if weekday in ["Saturday", "Sunday"]:
-            hours_worked = None
-            remarks = ""
-        else:
-            hours_worked = 8
-            remarks = ""
-
+        # Extract payload data if exists
         if day_of_month in entries:
             entry = entries[day_of_month]
             hours_worked = entry.get('hours_worked', hours_worked)
-            remarks = entry.get('remarks', remarks)
+            hours_worked = entry.get('time_in', time_in)
+            hours_worked = entry.get('time_out', time_out)
+            reason_for_absence = entry.get('reason_for_absence', reason_for_absence)
 
+        # Default logic if weekends
+        if weekday in ["Saturday", "Sunday"]:
+            hours_worked = None
+            reason_for_absence = ""
+            time_in = None
+            time_out = None
+        
+        # Logic for full day absent codes
+        elif reason_for_absence in ["AL", "MC", "UPL"]:
+            print("here")
+            hours_worked = None
+            reason_for_absence = reason_for_absence
+            time_in = ""
+            time_out = ""
+        
+        # Logic for half day absent codes
+        elif reason_for_absence in ["AM leave", "PM leave"]:
+            hours_worked = 3
+            reason_for_absence = reason_for_absence
+            if reason_for_absence == "AM leave":
+                time_in = "02:00pm"
+                time_out = "05:00pm"
+            else:
+                time_in = "09:00am"
+                time_out = "12:00pm"
+                
+        else:
+            hours_worked = 8
+            reason_for_absence = ""
+            time_in = "09:00am"
+            time_out = "09:00am"
+
+
+        # Fill in rows on specified columns with data(value)
         ws.cell(row=row_num, column=1, value=date_obj.strftime("%Y-%m-%d"))
         ws.cell(row=row_num, column=2, value=weekday)
-        ws.cell(row=row_num, column=3, value=hours_worked)
-        ws.cell(row=row_num, column=4, value=remarks)
+        ws.cell(row=row_num, column=3, value=reason_for_absence)
+        ws.cell(row=row_num, column=4, value=time_in)
+        ws.cell(row=row_num, column=5, value=time_out)
+        ws.cell(row=row_num, column=6, value=hours_worked)
 
-        for col in range(1, 5):
+        for col in range(1, 7):
             ws.cell(row=row_num, column=col).alignment = center_align
             ws.cell(row=row_num, column=col).border = thin_border
 
-    for col in range(1, 5):
+    for col in range(1, 7):
         col_letter = get_column_letter(col)
         ws.column_dimensions[col_letter].width = 15
 

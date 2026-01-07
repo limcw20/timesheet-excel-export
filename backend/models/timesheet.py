@@ -4,8 +4,10 @@ from typing import List, Optional
 
 class TimesheetEntry(BaseModel):
     day_of_month: int
+    time_in: Optional[str] = None
+    time_out: Optional[str] = None
     hours_worked: Optional[float] = 0
-    remarks: Optional[str] = None
+    reason_for_absence: Optional[str] = None
 
 class Timesheet(BaseModel):
     employee_id: str
