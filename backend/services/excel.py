@@ -65,6 +65,12 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         weekday = date_obj.strftime("%A")
         day_of_month = date_obj.day
 
+        # Default values for each iteration
+        hours_worked = 8
+        reason_for_absence = ""
+        time_in = "09:00am"
+        time_out = "09:00am"
+
         # Extract payload data if exists
         if day_of_month in entries:
             entry = entries[day_of_month]
@@ -84,7 +90,6 @@ def generate_timesheet_excel(timesheet: dict) -> str:
                 
         # Logic for full day absent codes
         elif reason_for_absence in ["AL", "MC", "UPL","PH"]:
-            print("here")
             hours_worked = None
             reason_for_absence = reason_for_absence
             time_in = ""
@@ -114,13 +119,6 @@ def generate_timesheet_excel(timesheet: dict) -> str:
             else:
                 for col in range(1, 7):
                     ws.cell(row=row_num, column=col).fill = leave_fill
-                
-        else:
-            hours_worked = 8
-            reason_for_absence = ""
-            time_in = "09:00am"
-            time_out = "09:00am"
-
 
         # Fill in rows on specified columns with data(value)
         ws.cell(row=row_num, column=1, value=date_obj.strftime("%Y-%m-%d"))
