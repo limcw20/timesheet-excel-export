@@ -1,5 +1,6 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
 from datetime import datetime, timedelta
 import uuid
 import os
@@ -21,9 +22,16 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         bottom=Side(style='thin')
     )
 
+    ws.merge_cells("A1:K1") 
+    title_cell = ws["A1"] 
+    title_cell.value = "Time Sheet" 
+    title_cell.font = Font(bold=True, size=20) 
+    title_cell.alignment = center_align
+    
+
     headers = ["Date", "Weekday", "Hours Worked", "Remarks"]
     for col, header in enumerate(headers, start=1):
-        cell = ws.cell(row=1, column=col, value=header)
+        cell = ws.cell(row=2, column=col, value=header)
         cell.font = bold_font
         cell.alignment = center_align
         cell.border = thin_border
@@ -45,7 +53,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     entries = {e.get('day_of_month'): e for e in timesheet.get('entries', [])}
 
     for i in range(total_days):
-        row_num = i + 2  
+        row_num = i + 3  
         date_obj = start_date + timedelta(days=i)
         weekday = date_obj.strftime("%A")
         day_of_month = date_obj.day
@@ -72,7 +80,8 @@ def generate_timesheet_excel(timesheet: dict) -> str:
             ws.cell(row=row_num, column=col).border = thin_border
 
     for col in range(1, 5):
-        ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = 15
+        col_letter = get_column_letter(col)
+        ws.column_dimensions[col_letter].width = 15
 
     out_file = os.path.join(TMP_DIR, f"timesheet_{uuid.uuid4()}.xlsx")
     wb.save(out_file)
