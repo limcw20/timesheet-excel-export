@@ -77,7 +77,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     name_cell.font = Font(bold=True, size=12)
     
     # Headers
-    headers = ["Day", "Date", "Reason for Absence", "Time In", "Time Out", "Hours Worked"]
+    headers = ["Day", "Date", "Reason for Absence", "Time In", "Time Out", "Hours Worked","OT From","OT To","OT hours","Total Hours", "OT Approved By"]
     for col, header in enumerate(headers, start=1):
         cell = ws.cell(row=6, column=col, value=header) # Header at row n
         cell.font = bold_font
@@ -97,9 +97,14 @@ def generate_timesheet_excel(timesheet: dict) -> str:
 
         # Default values for each iteration
         hours_worked = 8
-        reason_for_absence = ""
+        reason_for_absence = None
         time_in = "09:00am"
         time_out = "06:00pm"
+        ot_from = "-"
+        ot_to = "-"
+        ot_hours = "-"
+        ot_approved_by = "-"
+        total_hours = hours_worked
 
         # Extract payload data if exists
         if day_of_month in entries:
@@ -108,27 +113,43 @@ def generate_timesheet_excel(timesheet: dict) -> str:
             time_in = entry.get('time_in', time_in)
             time_out = entry.get('time_out', time_out)
             reason_for_absence = entry.get('reason_for_absence', reason_for_absence)
+            ot_from = entry.get('ot_from', ot_from)
+            ot_to = entry.get('ot_to', ot_to)
+            ot_hours = entry.get('ot_hours', ot_hours)
+            ot_approved_by = entry.get('ot_approved_by', ot_approved_by)
+            total_hours = int(hours_worked + ot_hours)
+            
 
         # Default logic if weekends
         if weekday in ["Saturday", "Sunday"]:
             hours_worked = None
-            reason_for_absence = ""
+            reason_for_absence = None
             time_in = None
             time_out = None
-            for col in range(1, 7):
+            ot_from = None
+            ot_to = None
+            ot_hours = None
+            total_hours = None
+            ot_approved_by = None
+            for col in range(1, 12):
                 ws.cell(row=row_num, column=col).fill = weekend_fill
                 
         # Logic for full day absent codes
         elif reason_for_absence in ["AL", "MC", "UPL","PH"]:
             hours_worked = None
             reason_for_absence = reason_for_absence
-            time_in = ""
-            time_out = ""
+            time_in = None
+            time_out = None
+            ot_from = None
+            ot_to = None
+            ot_hours = None
+            total_hours = None
+            ot_approved_by = None
             if reason_for_absence == "PH":
-                for col in range(1, 7):
+                for col in range(1, 12):
                     ws.cell(row=row_num, column=col).fill = holiday_fill
             else:
-                for col in range(1, 7):
+                for col in range(1, 12):
                     ws.cell(row=row_num, column=col).fill = leave_fill
             
         
@@ -136,6 +157,11 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         elif reason_for_absence in ["AM leave", "PM leave", "half day"]:
             hours_worked = 4
             reason_for_absence = reason_for_absence
+            ot_from = "-"
+            ot_to = "-"
+            ot_hours = "-"
+            total_hours = hours_worked
+            ot_approved_by = "-"
             if reason_for_absence == "AM leave":
                 time_in = "01:00pm"
                 time_out = "05:00pm"
@@ -144,10 +170,10 @@ def generate_timesheet_excel(timesheet: dict) -> str:
                 time_out = "01:00pm"
             
             if reason_for_absence == "half day":
-                for col in range(1, 7):
+                for col in range(1, 12):
                     ws.cell(row=row_num, column=col).fill = holiday_fill
             else:
-                for col in range(1, 7):
+                for col in range(1, 12):
                     ws.cell(row=row_num, column=col).fill = leave_fill
 
         # Fill in rows on specified columns with data(value)
@@ -157,8 +183,13 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         ws.cell(row=row_num, column=4, value=time_in)
         ws.cell(row=row_num, column=5, value=time_out)
         ws.cell(row=row_num, column=6, value=hours_worked)
+        ws.cell(row=row_num, column=7, value=ot_from)
+        ws.cell(row=row_num, column=8, value=ot_to)
+        ws.cell(row=row_num, column=9, value=ot_hours)
+        ws.cell(row=row_num, column=10, value=total_hours)
+        ws.cell(row=row_num, column=11, value=ot_approved_by)
 
-        for col in range(1, 7):
+        for col in range(1, 12):
             ws.cell(row=row_num, column=col).alignment = center_align
             ws.cell(row=row_num, column=col).border = thin_border
 
