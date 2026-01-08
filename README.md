@@ -3,7 +3,10 @@
   - Technical Diagram changes (renamed from Planning Stage)
   - Changelog from recent to oldest (top-down)
   - remove obsolete texts
-
+- Added Columns and autofill logic for overtime work
+- Refactor code: StreamingResponse to FileResponse, some values
+- Excel template adjustments
+- Fix codes with incorrect variables
 </br>
 
 # Export for Timesheet
@@ -49,7 +52,7 @@ No database needed. I had a realization that just writing the JSON payload on Po
  
 ### 02/01/26
 - Adjusted to correct date loop (4th of specified month to 3rd of following month)
-- Logic to exclude propagated data on weekends, and allow dates to be overwritten if specified on payload
+- Logic to exclude autofill data on weekends, and allow dates to be overwritten if specified on payload
 - Improved payload for date entry -> integer format representing day of month (e.g. 1, 2, 3,..31) instead of date format
 - Minor Code reordering for export excel API call
 
