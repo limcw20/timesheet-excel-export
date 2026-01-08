@@ -30,11 +30,11 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     ws.column_dimensions["D"].width = 20
     ws.column_dimensions["E"].width = 20
     ws.column_dimensions["F"].width = 15
-    # ws.column_dimensions["G"].width = 10
-    # ws.column_dimensions["H"].width = 10
-    # ws.column_dimensions["I"].width = 10
-    # ws.column_dimensions["J"].width = 10
-    # ws.column_dimensions["K"].width = 10
+    ws.column_dimensions["G"].width = 13
+    ws.column_dimensions["H"].width = 9
+    ws.column_dimensions["I"].width = 11
+    ws.column_dimensions["J"].width = 10
+    ws.column_dimensions["K"].width = 18
 
     # 1st Row Title
     ws.merge_cells("A1:K1") 
@@ -70,11 +70,13 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     date_period_cell = ws["D3"]
     date_period_cell.value = f"Date Period: {start_date.strftime('%d %b %Y')} to {end_date.strftime('%d %b %Y')}"
     date_period_cell.font = Font(bold=True, size=12)
+    date_period_cell.alignment = center_align
     
     ws.merge_cells("G3:K3")
     name_cell = ws["G3"]
     name_cell.value = "Name of Staff: John Doe"
     name_cell.font = Font(bold=True, size=12)
+    name_cell.alignment = Alignment(horizontal="right")
     
     # Headers
     headers = ["Day", "Date", "Reason for Absence", "Time In", "Time Out", "Hours Worked","OT From","OT To","OT hours","Total Hours", "OT Approved By"]
