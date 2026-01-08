@@ -99,14 +99,14 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         hours_worked = 8
         reason_for_absence = ""
         time_in = "09:00am"
-        time_out = "09:00am"
+        time_out = "06:00pm"
 
         # Extract payload data if exists
         if day_of_month in entries:
             entry = entries[day_of_month]
             hours_worked = entry.get('hours_worked', hours_worked)
-            hours_worked = entry.get('time_in', time_in)
-            hours_worked = entry.get('time_out', time_out)
+            time_in = entry.get('time_in', time_in)
+            time_out = entry.get('time_out', time_out)
             reason_for_absence = entry.get('reason_for_absence', reason_for_absence)
 
         # Default logic if weekends
@@ -134,14 +134,14 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         
         # Logic for half day absent codes
         elif reason_for_absence in ["AM leave", "PM leave", "half day"]:
-            hours_worked = 3
+            hours_worked = 4
             reason_for_absence = reason_for_absence
             if reason_for_absence == "AM leave":
-                time_in = "02:00pm"
+                time_in = "01:00pm"
                 time_out = "05:00pm"
             else:
                 time_in = "09:00am"
-                time_out = "12:00pm"
+                time_out = "01:00pm"
             
             if reason_for_absence == "half day":
                 for col in range(1, 7):
