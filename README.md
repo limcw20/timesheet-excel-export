@@ -1,12 +1,20 @@
 
-*Was away for military service, currently recovering from eye surgery.
+*Currently recovering from eye surgery.
 </br>
 
-### LATEST UPDATE (31/12/25)
-- Started on base structure of Excel Template.
-- Setup for excel generation API call, payload in JSON format.
-- Dates in excel are auto-filled according to month and year provided. (Starts at 3rd day of month for now)
-- Excel temporarily exports to project folder for ease of testing, will be shifted to .env after structure is finalized.
+### LATEST UPDATE (07/01/26)
+- Added comments to codes for easier code editing and referencing (I will do it as I code along from today onwards, whoops)
+- Further developed the timesheet template:
+  - Title, Employee reference number, date range, employee name
+  - Adjusted column widths
+  - Added Time in & Time out columns
+  - Reordered table headers, swapping "Date" and "Day", and "Remarks" changed to "Reason for Absence"
+  - Background colour highlighting on specific dates (Weekends, Holidays, Leaves)
+- Autofill time in & time out data unless specified in payload, logic to handle different absent codes such as:
+  - "PH", "MC", "UPL","AL" on Reason for Absence -> blank for time in & time out
+  - "PM leave", "half day" on Reason for Absence -> autofill time in: 9am, timeout:12pm, hours worked: 3
+  - "AM leave" on Reason for Absence -> autofill time in: 2pm, timeout: 5pm, hours worked: 3
+</br>
 
 # Export for Timesheet
 
@@ -39,3 +47,24 @@ Currently, I do not foresee a need for a database, as there is no reason to reta
 - Other Deployments: Docker (possibly for sharing)
 
   \*Online deployment not needed
+
+
+
+## Changelog:
+
+### 10/12/25
+- Init project + README
+- Background Issue & Planning
+
+### 31/12/25
+Went missing due to military service and eye surgery :-P
+- Started on base structure of Excel Template.
+- Setup for excel generation API call, payload in JSON format.
+- Dates in excel are auto-filled according to month and year provided. (Starts at 3rd day of month for now)
+- Excel temporarily exports to project folder for ease of testing, will be shifted to .env after structure is finalized.
+
+### 02/01/26
+- Adjusted to correct date loop (4th of specified month to 3rd of following month)
+- Logic to exclude propagated data on weekends, and allow dates to be overwritten if specified on payload
+- Improved payload for date entry -> integer format representing day of month (e.g. 1, 2, 3,..31) instead of date format
+- Minor Code reordering for export excel API call
