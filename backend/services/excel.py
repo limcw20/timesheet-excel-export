@@ -1,6 +1,5 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
-from openpyxl.utils import get_column_letter
 from datetime import datetime, timedelta
 import uuid
 import os
