@@ -1,6 +1,7 @@
 #Backend Core
 fastapi[standard]
 uvicorn
+python-dotenv
 
 #Excel
 openpyxl
