@@ -1,12 +1,14 @@
-### LATEST UPDATE (08/01/26)
-- Modified README:
-  - Technical Diagram changes (renamed from Planning Stage)
-  - Changelog from recent to oldest (top-down)
-  - remove obsolete texts
-- Added Columns and autofill logic for overtime work
-- Refactor code: StreamingResponse to FileResponse, some values
-- Excel template adjustments
-- Fix codes with incorrect variables
+### LATEST UPDATE (09/01/26)
+- Added bottom part of the template (also the final):
+  - Staff name + date of timesheet preparation
+  - Supervisor name + date + signature, to be filled by supervisor
+- Initialize .env and used for the following:
+  - File directory
+  - File name
+  - Staff name
+  - Staff reference number
+- Removed obsolete code
+- Added "Guide" section in README, contains example .env and json payload for now
 </br>
 
 # Export for Timesheet
@@ -25,7 +27,7 @@ Below is a sample of the timesheet template given to me to submit every month. A
 No database needed. I had a realization that just writing the JSON payload on Postman is sufficient, hence I will shelf the idea for frontend.
 </br>
 
-### Tech Stack:
+## Tech Stack:
 
 - Backend: FastAPI
 - Backend Libraries: OpenPYXL
@@ -35,9 +37,51 @@ No database needed. I had a realization that just writing the JSON payload on Po
 \*Online deployment not needed
 
 
+# Guide
+
+### Example .env values
+These are the variables and example values that used:
+````
+FILE_DIRECTORY=Documents/timesheets
+TIMESHEET_FILENAME=2601_timesheet
+STAFF_NAME=John Doe
+STAFF_REF_NO=EMP9998
+````
+
+### Example JSON payload
+**Method:** POST
+</br>
+**HTTP URL:** http://{your_local_server_here}/timesheet/export
+</br>
+**Raw JSON payload in request body:**
+````
+{
+  "start_year": 2026,
+  "start_month": 1,
+  "entries": [
+    {"day_of_month": 3,"reason_for_absence": "AL"},
+    {"day_of_month": 12,"reason_for_absence": "AM leave"},
+    {"day_of_month": 16,"reason_for_absence": "PM leave"},
+    {"day_of_month": 20,"reason_for_absence": "half day"},
+    {"day_of_month": 21,"reason_for_absence": "PH"},
+    {"day_of_month": 6,"ot_from":"06:00pm","ot_to":"08:00pm","ot_hours":2,"ot_approved_by":"Jane Doe"}
+  ]
+}
+````
+
 ## Changelog:
 
-## 08/01/26
+### 08/01/26
+- Modified README:
+  - Technical Diagram changes (renamed from Planning Stage)
+  - Changelog from recent to oldest (top-down)
+  - remove obsolete texts
+- Added Columns and autofill logic for overtime work
+- Refactor code: StreamingResponse to FileResponse, some values
+- Excel template adjustments
+- Fix codes with incorrect variables
+
+### 07/01/26
 - Added comments to codes for easier code editing and referencing (I will do it as I code along from today onwards, whoops)
 - Further developed the timesheet template:
   - Title, Employee reference number, date range, employee name
