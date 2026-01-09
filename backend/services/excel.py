@@ -21,6 +21,9 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         top=Side(style='thin'),
         bottom=Side(style='thin')
     )
+    bottom_border = Border(
+        bottom=Side(style='thin')
+    )
 
     # Column widths
     ws.column_dimensions["A"].width = 11
@@ -193,7 +196,46 @@ def generate_timesheet_excel(timesheet: dict) -> str:
         for col in range(1, 12):
             ws.cell(row=row_num, column=col).alignment = center_align
             ws.cell(row=row_num, column=col).border = thin_border
-
+            
+        
+    # Name & Date of preparer at the bottom
+    preparer_cell = ws["B" + str(row_num + 2)]
+    preparer_cell.value = "Name:"
+    preparer_cell.alignment = Alignment(horizontal="right")
+    preparer_fill_cell = ws["C" + str(row_num + 2)]
+    preparer_fill_cell.value = "John Doe"
+    preparer_fill_cell.border = bottom_border
+    preparer_fill_cell.alignment = center_align
+    
+    preparer_date_cell = ws["B" + str(row_num + 5)]
+    preparer_date_cell.value = "Date:"
+    preparer_date_cell.alignment = Alignment(horizontal="right")
+    preparer_date_fill_cell = ws["C" + str(row_num + 5)]
+    preparer_date_fill_cell.value = datetime.now().strftime("%Y-%m-%d")
+    preparer_date_fill_cell.alignment = center_align
+    preparer_date_fill_cell.border = bottom_border
+    
+    # Name, Date, Signature of Approver at the bottom
+    approver_cell = ws["E" + str(row_num + 2)]
+    approver_cell.value = "Supervisor Name:"
+    approver_cell.alignment = Alignment(horizontal="right")
+    approver_fill_cell_f = ws["F" + str(row_num + 2)]
+    approver_fill_cell_g = ws["G" + str(row_num + 2)]
+    approver_fill_cell_f.border = bottom_border
+    approver_fill_cell_g.border = bottom_border
+    
+    approver_signature_cell = ws["E" + str(row_num + 5)]
+    approver_signature_cell.value = "Signature:"
+    approver_signature_cell.alignment = Alignment(horizontal="right")
+    approver_signature_fill_cell = ws["F" + str(row_num + 5)]
+    approver_signature_fill_cell.border = bottom_border
+    
+    approver_date_cell = ws["E" + str(row_num + 7)]
+    approver_date_cell.value = "Date:"
+    approver_date_cell.alignment = Alignment(horizontal="right")
+    approver_date_fill_cell = ws["F" + str(row_num + 7)]
+    approver_date_fill_cell.border = bottom_border
+    
     out_file = os.path.join(TMP_DIR, f"timesheet_{uuid.uuid4()}.xlsx")
     wb.save(out_file)
     return out_file
