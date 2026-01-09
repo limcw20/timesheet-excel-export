@@ -7,6 +7,8 @@ from pathlib import Path
 # Environment Variables
 env_path = os.getenv("FILE_DIRECTORY")
 timesheet_filename = os.getenv("TIMESHEET_FILENAME")
+staff_name = os.getenv("STAFF_NAME")
+staff_ref_no = os.getenv("STAFF_REF_NO")
 
 
 # Save file to directory from home path
@@ -71,7 +73,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     # 3rd Row - employee ref, date period, name of employee
     ws.merge_cells("A3:C3")
     employee_ref_cell = ws["A3"]
-    employee_ref_cell.value = "Contract Reference No: UU-9999"
+    employee_ref_cell.value = f"Contract Reference No: {staff_ref_no}"
     employee_ref_cell.font = Font(bold=True, size=12)
 
     ws.merge_cells("D3:F3")
@@ -82,7 +84,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     
     ws.merge_cells("G3:K3")
     name_cell = ws["G3"]
-    name_cell.value = "Name of Staff: John Doe"
+    name_cell.value = f"Name of Staff: {staff_name}"
     name_cell.font = Font(bold=True, size=12)
     name_cell.alignment = Alignment(horizontal="right")
     
@@ -209,7 +211,7 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     preparer_cell.value = "Name:"
     preparer_cell.alignment = Alignment(horizontal="right")
     preparer_fill_cell = ws["C" + str(row_num + 2)]
-    preparer_fill_cell.value = "John Doe"
+    preparer_fill_cell.value = staff_name
     preparer_fill_cell.border = bottom_border
     preparer_fill_cell.alignment = center_align
     
