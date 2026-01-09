@@ -1,12 +1,18 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from datetime import datetime, timedelta
-import uuid
 import os
+from pathlib import Path
 
-# Temporary directory (to change when all is done)
-TMP_DIR = "tmp"
-os.makedirs(TMP_DIR, exist_ok=True)
+# Environment Variables
+env_path = os.getenv("FILE_DIRECTORY")
+timesheet_filename = os.getenv("TIMESHEET_FILENAME")
+
+
+# Save file to directory from home path
+target_path = Path.home() / env_path
+
+target_path.mkdir(parents=True, exist_ok=True)
 
 def generate_timesheet_excel(timesheet: dict) -> str:
 
@@ -236,6 +242,6 @@ def generate_timesheet_excel(timesheet: dict) -> str:
     approver_date_fill_cell = ws["F" + str(row_num + 7)]
     approver_date_fill_cell.border = bottom_border
     
-    out_file = os.path.join(TMP_DIR, f"timesheet_{uuid.uuid4()}.xlsx")
+    out_file = os.path.join(str(target_path), f"{timesheet_filename}.xlsx")
     wb.save(out_file)
     return out_file
