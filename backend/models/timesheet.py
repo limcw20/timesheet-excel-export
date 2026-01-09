@@ -14,7 +14,6 @@ class TimesheetEntry(BaseModel):
     ot_approved_by: Optional[str] = None
 
 class Timesheet(BaseModel):
-    employee_id: str
     start_year: int
     start_month: int
     entries: Optional[List[TimesheetEntry]] = []
