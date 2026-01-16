@@ -1,18 +1,12 @@
-### LATEST UPDATE (09/01/26)
-- Added bottom part of the template (also the final):
-  - Staff name + date of timesheet preparation
-  - Supervisor name + date + signature, to be filled by supervisor
-- Initialize .env and used for the following:
-  - File directory
-  - File name
-  - Staff name
-  - Staff reference number
-- Removed obsolete code
-- Added "Guide" section in README, contains example .env and json payload for now
+# Export for Timesheet
+![Recording 2026-01-16 192346](https://github.com/user-attachments/assets/4a0a5c88-dc39-4119-9916-83c1123eaba2)
+
+### LATEST UPDATE (16/01/26)
+- update on Documentation
 </br>
 
-# Export for Timesheet
 
+## Background Information
 <strong>ISSUE:</strong>
 </br>
 I spend a lot of time manually editing my Excel timesheet at work every month (e.g. edit details such as dates, days, row highlights, etc.)
@@ -38,6 +32,20 @@ No database needed. I had a realization that just writing the JSON payload on Po
 
 
 # Guide
+
+### Installation
+Using terminal, create a virtual environment then install the requirements on your project folder. Then run the project:
+````
+# Initialize virtual environment
+python -m venv .venv
+
+# Activate virtual environment before installing
+.venv/Scripts/activate
+pip install -r requirements.txt
+
+# Run the project (make sure venv is activated)
+uvicorn main:app --port YOUR_PORT_NUMBER --reload
+````
 
 ### Example .env values
 These are the variables and example values that used:
@@ -68,8 +76,21 @@ STAFF_REF_NO=EMP9998
   ]
 }
 ````
+This can be done using Postman.
 
 ## Changelog:
+
+### 09/01/26
+- Added bottom part of the template (also the final):
+  - Staff name + date of timesheet preparation
+  - Supervisor name + date + signature, to be filled by supervisor
+- Initialize .env and used for the following:
+  - File directory
+  - File name
+  - Staff name
+  - Staff reference number
+- Removed obsolete code
+- Added "Guide" section in README, contains example .env and json payload for now
 
 ### 08/01/26
 - Modified README:
